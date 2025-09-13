@@ -37,7 +37,7 @@ df["transfers_out_event"] = df["transfers_out_event"]  # transfers out this GW
 
 # Select relevant columns
 df_form = df[[
-    "web_name", "position", "club", "form", "price", "price_float",
+    "web_name", "position", "club", "form", "price", "price_float","total_points",
     "goals_scored", "assists", "minutes", "transfers_in_event", "transfers_out_event", "status", "news"
 ]].sort_values(by="form", ascending=False)
 
@@ -63,7 +63,7 @@ filtered_df = filtered_df[filtered_df["price_float"] <= price_filter]
 filtered_df = filtered_df.drop(columns=["price_float"])
 
 # Add row numbers
-filtered_df = filtered_df.head(150).reset_index(drop=True)
+filtered_df = filtered_df.head(750).reset_index(drop=True)
 filtered_df.insert(0, "No.", filtered_df.index + 1)
 
 # Rename columns for clean headers
@@ -73,6 +73,7 @@ filtered_df.rename(columns={
     "club": "Club",
     "form": "Form",
     "price": "Price (£m)",
+    "total_points": "Total Points",
     "goals_scored": "Goals Scored",
     "assists": "Assists",
     "minutes": "Minutes Played",
