@@ -32,12 +32,12 @@ df["price"] = "£" + df["price_float"].astype(str)   # for display
 df["club"] = df["team"].map(club_map)
 df["status"] = df["status"].map(status_map)
 df["news"] = df["news"]
-df["transfers_in_event"] = df["transfers_in_event"]  # transfers in this GW
-df["transfers_out_event"] = df["transfers_out_event"]  # transfers out this GW
+df["transfers_in_event"] = df["transfers_in_event"]
+df["transfers_out_event"] = df["transfers_out_event"]
 
 # Select relevant columns
 df_form = df[[
-    "web_name", "position", "club", "form", "price", "price_float","total_points",
+    "web_name", "position", "club", "form", "price", "price_float", "total_points",
     "goals_scored", "assists", "minutes", "transfers_in_event", "transfers_out_event", "status", "news"
 ]].sort_values(by="form", ascending=False)
 
@@ -50,6 +50,7 @@ st.markdown("One place to get the details of Premier League players based "
 position_filter = st.selectbox("Filter by Position", ["All"] + list(position_map.values()))
 club_filter = st.selectbox("Filter by Club", ["All"] + sorted(club_map.values()))
 price_filter = st.slider("Max Price (£m)", 4.0, 15.0, 15.0)
+flagged_only = st.checkbox("Show only Flagged players (Injured, Doubtful, Suspended)")
 
 # Apply filters
 filtered_df = df_form.copy()
@@ -58,6 +59,11 @@ if position_filter != "All":
 if club_filter != "All":
     filtered_df = filtered_df[filtered_df["club"] == club_filter]
 filtered_df = filtered_df[filtered_df["price_float"] <= price_filter]
+
+# Status filter
+if flagged_only:
+    flagged_statuses = ["Injured", "Doubtful", "Suspended"]
+    filtered_df = filtered_df[filtered_df["status"].isin(flagged_statuses)]
 
 # Drop helper column before display
 filtered_df = filtered_df.drop(columns=["price_float"])
